@@ -159,7 +159,7 @@ How to Mod
 5. Replace the builds in the build directory.
             """)
             while True:
-                
+                pass
         main()
         
 print("\nWelcome to pMod Launcher!")
