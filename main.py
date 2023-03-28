@@ -158,7 +158,8 @@ How to Mod
 4. Compile your new .sb3 file.
 5. Replace the builds in the build directory.
             """)
-            while True
+            while True:
+                
         main()
         
 print("\nWelcome to pMod Launcher!")
