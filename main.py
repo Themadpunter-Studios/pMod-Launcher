@@ -40,6 +40,7 @@ try:
     os.remove("versions.json")
 except:
     pass
+wget.args = "--no-cache"
 wget.download("https://raw.githubusercontent.com/Themadpunter-Studios/pMod-data/main/versions.json")
 with open("versions.json", "r") as read_file:
     versionsjson = json.load(read_file)
