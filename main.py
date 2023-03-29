@@ -4,6 +4,8 @@ import sys
 import os
 import wget
 import zipfile
+import shutil
+
 def clear():
     # for windows
     if os.name == 'nt':
@@ -38,6 +40,7 @@ try:
     os.remove("versions.json")
 except:
     pass
+wget.args = "--no-cache"
 wget.download("https://raw.githubusercontent.com/Themadpunter-Studios/pMod-data/main/versions.json")
 with open("versions.json", "r") as read_file:
     versionsjson = json.load(read_file)
@@ -73,7 +76,10 @@ def main():
     print("2) Switch Instance")
     print("3) Create Instance")
     print("4) Modify Instance")
-    choice = int(input("pMod> "))
+    try:
+        choice = int(input("pMod> "))
+    except:
+        choice = 0
     if choice == 1:
         webbrowser.open(gamesjson["games"][instance]["gamedir"]+"/build/index.html")
     elif choice == 2:
@@ -102,6 +108,59 @@ def main():
             versionName = input("pMod> ")
         downloadVersionInstance(versionName, instanceName)
         print("\n\n")
+        main()
+    elif choice == 4:
+        clear()
+        print("How to mod instance?")
+        print("1) Rename Instance")
+        print("2) Delete Instance")
+        print("3) Set as Default")
+        print("4) Modding Info")
+        try:
+            choice = int(input("pMod> "))
+        except:
+            choice = 0
+        if choice == 1:
+            print("What to rename to?")
+            mvto = input("pMod> ")
+            os.rename(instance, mvto)
+            gamesjson["games"][mvto] = gamesjson["games"][instance]
+            gamesjson["games"][mvto]["gamedir"] = os.getcwd()+"/"+mvto
+            if gamesjson["default"] == instance:
+                gamesjson["default"] = mvto
+            del gamesjson["games"][instance]
+            instance = mvto
+            with open("games.json", "w") as write_file:
+                json.dump(gamesjson, write_file)
+            main()
+        elif choice == 2:
+            if len(gamesjson["games"].keys()) < 2:
+                print("Can't remove only instance")
+                main()
+            shutil.rmtree(instance)
+            del gamesjson["games"][instance]
+            if instance == gamesjson["default"]:
+                instance = list(gamesjson["games"].keys())[0]
+                gamesjson["default"] = list(gamesjson["games"].keys())[0]
+            with open("games.json", "w") as write_file:
+                json.dump(gamesjson, write_file)
+            main()
+        elif choice == 3:
+            gamesjson["default"] = instance
+            with open("games.json", "w") as write_file:
+                json.dump(gamesjson, write_file)
+            main()
+        elif choice == 4:
+            print("""
+How to Mod
+1. Open the .sb3 file in https://shredmod.is-an.app
+2. Apply your changes.
+3. Go to https://shredmod.github.io/packager/.
+4. Compile your new .sb3 file.
+5. Replace the builds in the build directory.
+            """)
+            while True:
+                pass
         main()
         
 print("\nWelcome to pMod Launcher!")
